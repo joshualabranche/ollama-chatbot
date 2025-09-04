@@ -1,17 +1,20 @@
 # ollama-chatbot
 
-requires:
-  ollama https://ollama.com/download
+ ## **requirements**
+
+  **ollama** https://ollama.com/download
   - used to maintain LLM libraries
     
-  conda https://github.com/conda-forge/miniforge
+  **conda** https://github.com/conda-forge/miniforge
   - python package management system using conda & conda-forge
   
-  nicegui https://nicegui.io/
+  **nicegui** https://nicegui.io/
   - python library for generating GUIs
   
-  ollama-python https://github.com/ollama/ollama-python
+  **ollama-python** https://github.com/ollama/ollama-python
   - python ollama API for using ollama in python programs
+
+## ** getting started **
 
 1. install ollama as needed
    - ``` ollama serve # start the server ```
