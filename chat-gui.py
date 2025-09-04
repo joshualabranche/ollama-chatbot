@@ -51,7 +51,7 @@ def main():
         message.append({'role': 'user', 'content': question})
         # retrieve the response async as a streamed output
         response = ''
-        async for part in await AsyncClient().chat(model='codellama:latest', messages=message, stream=True):
+        async for part in await AsyncClient().chat(model='gemma3:latest', messages=message, stream=True):
             response += part['message']['content']
             response_message.clear()
             with response_message:
