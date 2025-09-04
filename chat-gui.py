@@ -93,4 +93,4 @@ def main():
             ui.button('Reset History', on_click=clear) #lambda message: (message := [], ui.notify('Chat History Cleared!')))
 
 # lastly we run the GUI
-ui.run(title='LLM Chat', favicon='😊')
+ui.run(title='LLM Chat', favicon='https://robohash.org/friend?bgset=bg2')
