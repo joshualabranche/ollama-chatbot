@@ -14,7 +14,7 @@
   **ollama-python** https://github.com/ollama/ollama-python
   - python ollama API for using ollama in python programs
 
-## ** getting started **
+## **getting started**
 
 1. install ollama as needed
    - ``` ollama serve # start the server ```
