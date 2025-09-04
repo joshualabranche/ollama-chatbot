@@ -5,7 +5,6 @@ Created on Thu Sep  4 13:24:12 2025
 
 @author: jlab
 
-
 """
 
 from nicegui import ui
