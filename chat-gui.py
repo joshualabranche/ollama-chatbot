@@ -48,7 +48,6 @@ def main():
             # append chat history to log file
             log.push(question)
 
-        
         # append current prompt to chat history
         message.append({'role': 'user', 'content': question})
         # retrieve the response async as a streamed output
@@ -61,6 +60,7 @@ def main():
                 ui.html(response)
             # js function to auto scroll as chat develops
             ui.run_javascript('window.scrollTo(0, document.body.scrollHeight)')
+
         # once responded no more "thinking" dots
         message_container.remove(spinner)
         # save bot response to chat history and log tab
