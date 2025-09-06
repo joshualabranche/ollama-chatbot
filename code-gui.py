@@ -69,7 +69,7 @@ def main():
         log.push(part['message']['content'])
         
     # CSS style options
-    ui.add_css(r'a:link, a:visited {color: inherit !important; text-decoration: none; font-weight: 500}')
+    ui.add_css(r'a:link, a:visited {color: inherit !important; text-decoration: none; font-weight: 500; font-size: 18}')
 
     # the queries below are used to expand the contend down to the footer (content can then use flex-grow to expand)
     ui.query('.q-page').classes('flex')
@@ -95,4 +95,4 @@ def main():
             ui.button('Reset History', on_click=clear) #lambda message: (message := [], ui.notify('Chat History Cleared!')))
 
 # lastly we run the GUI
-ui.run(title='LLM Chat', favicon='https://robohash.org/friend?bgset=bg2')
+ui.run(title='LLM Code', favicon='https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg')
