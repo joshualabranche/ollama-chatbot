@@ -29,8 +29,8 @@ def main():
     async def clear() -> None:
         message.clear()
         ui.notify('History Cleared!')
-        
-
+    
+    
     async def send() -> None:           
         # text is a ui.input used to get user input
         question = text.value
@@ -42,18 +42,18 @@ def main():
             # create user message input
             ui.chat_message(text=question, stamp=stamp, avatar=user_avatar, name='User', sent=True)
             # create bot response message
-            response_message = ui.chat_message(name='Mr. Robot', stamp='Now', avatar=robot_avatar, sent=False)
+            response_message = ui.chat_message(name='Mr. Robot', stamp=stamp, avatar=robot_avatar, sent=False)
             # "thinking" dots for output
             spinner = ui.spinner(type='dots')
             # append chat history to log file
             log.push(question)
 
         # append current prompt to chat history
-        message.append({'role': 'user', 'content': question + ". make sure any python code has linebreak characters for proper formatting when using the python function print"})
-        # retrieve the response async as output
+        message.append({'role': 'user', 'content': question + ". make sure any python code has proper linebreak characters for proper format when using the python function print"})
+        # retrieve the response async as a streamed output
         part = await AsyncClient().chat(model='gemma3:latest', messages=message, format=code_response.model_json_schema(), stream=False)
         output = code_response.model_validate_json(part['message']['content'])
-        
+        #response += part['message']['content']
         response_message.clear()
         with response_message:
             ui.label(output.information)
