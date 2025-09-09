@@ -14,7 +14,15 @@ from datetime import datetime
 from response_formats import code_response
 
 # generate a list of message information to keep a chat history with the bot
+pyformat = """
+make sure any python code has proper linebreak characters for proper format when using the python function print.
+use the 'PEP 8' official python style guide for all python code generation.
+use lower_case_with_underscores naming conventions.
+
+
+"""
 message = []
+message.append({'role': 'user', 'content': pyformat})
 
 @ui.page('/')
 def main():
@@ -49,7 +57,7 @@ def main():
             log.push(question)
 
         # append current prompt to chat history
-        message.append({'role': 'user', 'content': question + ". make sure any python code has proper linebreak characters for proper format when using the python function print"})
+        message.append({'role': 'user', 'content': question})
         # retrieve the response async as a streamed output
         part = await AsyncClient().chat(model='gemma3:latest', messages=message, format=code_response.model_json_schema(), stream=False)
         output = code_response.model_validate_json(part['message']['content'])
@@ -57,7 +65,7 @@ def main():
         response_message.clear()
         with response_message:
             ui.label(output.information)
-            ui.code(output.snippet)
+            ui.code(output.generated_code)
             ui.html("OVERVIEW: <br> "+ output.overview + "<br><br> *** <br><br> EXECUTION: <br>" + output.execution)
         # js function to auto scroll as chat develops
         ui.run_javascript('window.scrollTo(0, document.body.scrollHeight)')
