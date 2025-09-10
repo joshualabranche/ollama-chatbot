@@ -33,15 +33,15 @@ class conversation():
         self.append_message('user',self.pyformat)
         self.append_message('assistant','Yes sir, I will follow those rules!')
         self.options = {
-            'num_keep': 5,
+            'num_keep': 1,
             'seed': 42,
             'num_predict': 2048,
-            'top_k': 20,
-            'top_p': 0.75,
+            'top_k': 40,
+            'top_p': 0.85,
             'min_p': 0.0,
             'typical_p': 0.7,
             'repeat_last_n': 64,
-            'temperature': 0.5,
+            'temperature': 0.1,
             'repeat_penalty': 1.1,
             'presence_penalty': 1.5,
             'frequency_penalty': 1.1,
@@ -84,11 +84,10 @@ def main():
     dark.enable()
     
     """ 
-    NAME                        COMMIT          SIZE      UPDATED
-    deepseek-coder-v2:latest    63fb193b3a9b    8.9 GB    21 seconds ago
-    qwen2.5-coder:latest        dae161e27b0e    4.7 GB    6 minutes ago
-    codellama:latest            8fdf8f752f6e    3.8 GB    5 days ago
-    gemma3:latest               a2af6cc3eb7f    3.3 GB    5 days ago
+    NAME                    ID              SIZE      MODIFIED       
+    gpt-oss:latest          aa4295ac10c3    13 GB     2 minutes ago     
+    qwen2.5-coder:latest    dae161e27b0e    4.7 GB    48 minutes ago    
+    gemma3:latest           a2af6cc3eb7f    3.3 GB    5 days ago      
     """
     model_name = 'gemma3:latest'
     
