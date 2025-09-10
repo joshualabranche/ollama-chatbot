@@ -21,23 +21,24 @@ class conversation():
         """Initializes the MyClass object."""
         self.messages = []
         self.pyformat = """
-            use linebreak characters for proper format when using the python function print.
-            use the 'PEP 8' official python style guide for all python code generation.
-            use lower_case_with_underscores naming conventions.
-            do not use triple quotes at the beginning of the code snippet
+            required: linebreak characters for proper format when using the python function print.
+            required: 'PEP 8' official python style guide for all python code generation.
+            required: PEP 8 type hinting.
+            required: lower_case_with_underscores naming conventions.
+            required: do not use triple quotes at the beginning of the code snippet
             """
         self.append_message('user',self.pyformat)
         self.append_message('assistant','Yes sir, I will follow those rules!')
         self.options = {
             'num_keep': 5,
             'seed': 42,
-            'num_predict': -1,
-            'top_k': 40,
-            'top_p': 0.95,
+            'num_predict': 2048,
+            'top_k': 10,
+            'top_p': 0.75,
             'min_p': 0.0,
             'typical_p': 0.7,
             'repeat_last_n': 64,
-            'temperature': 0.8,
+            'temperature': 0.2,
             'repeat_penalty': 1.1,
             'presence_penalty': 1.5,
             'frequency_penalty': 1.0,
@@ -75,7 +76,9 @@ class conversation():
 
 @ui.page('/')
 def main():
-
+    dark = ui.dark_mode()
+    dark.enable()
+    
     convo = conversation()
     
     # generate a bot icon from user ID and human icon from 'human' string
@@ -126,7 +129,7 @@ def main():
 
     # the queries below are used to expand the contend down to the footer (content can then use flex-grow to expand)
     ui.query('.q-page').classes('flex')
-    ui.query('.nicegui-content').classes('w-full bg-black')
+    ui.query('.nicegui-content').classes('w-full')
 
     # create two tabs in the window
     with ui.tabs().classes('bg-grey') as tabs:
@@ -134,17 +137,17 @@ def main():
         logs_tab = ui.tab('Logs')
     
     # create message container for the chat tab and log for the log tab
-    with ui.tab_panels(tabs, value=chat_tab).classes('w-full bg-black mx-auto flex-grow items-stretch'):
+    with ui.tab_panels(tabs, value=chat_tab).classes('w-full mx-auto flex-grow items-stretch'):
         message_container = ui.tab_panel(chat_tab).classes('items-stretch')
         with ui.tab_panel(logs_tab):
-            log = ui.log().classes('w-full h-full bg-black')
+            log = ui.log().classes('w-full h-full')
 
     # this is where the user input box and clear history button are constructed
     with ui.footer().classes('bg-black'), ui.column().classes('w-full max-w-3xl mx-auto my-6'):
         with ui.row().classes('w-full no-wrap items-center'):
             placeholder = 'message'
             text = ui.input(placeholder=placeholder).props('input-class=mx-3') \
-                .classes('w-full bg-grey self-center').on('keydown.enter', send)
+                .classes('w-full self-center').on('keydown.enter', send)
             ui.button('Reset History', on_click=convo.clear_history)
 
 # lastly we run the GUI
