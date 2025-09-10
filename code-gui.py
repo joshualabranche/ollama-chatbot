@@ -13,33 +13,78 @@ from uuid import uuid4
 from datetime import datetime
 from response_formats import code_response
 
-# generate a list of message information to keep a chat history with the bot
-pyformat = """
-make sure any python code has proper linebreak characters for proper format when using the python function print.
-use the 'PEP 8' official python style guide for all python code generation.
-use lower_case_with_underscores naming conventions.
 
+class conversation():
+    """conversation class"""
 
-"""
-message = []
-message.append({'role': 'user', 'content': pyformat})
+    def __init__(self):
+        """Initializes the MyClass object."""
+        self.messages = []
+        self.pyformat = """
+            use linebreak characters for proper format when using the python function print.
+            use the 'PEP 8' official python style guide for all python code generation.
+            use lower_case_with_underscores naming conventions.
+            do not use triple quotes at the beginning of the code snippet
+            """
+        self.append_message('user',self.pyformat)
+        self.append_message('assistant','Yes sir, I will follow those rules!')
+        self.options = {
+            'num_keep': 5,
+            'seed': 42,
+            'num_predict': -1,
+            'top_k': 40,
+            'top_p': 0.95,
+            'min_p': 0.0,
+            'typical_p': 0.7,
+            'repeat_last_n': 64,
+            'temperature': 0.8,
+            'repeat_penalty': 1.1,
+            'presence_penalty': 1.5,
+            'frequency_penalty': 1.0,
+            'penalize_newline': False,
+            'stop': ["user:"],
+            'numa': False,
+            'num_ctx': 1024,
+            'num_batch': 2,
+            'num_gpu': 1,
+            'main_gpu': 0,
+            'use_mmap': True,
+            'num_thread': 8
+          }
+        
+    def set_option(self, opt_name, value):
+        if opt_name in self.options:
+            self.options[opt_name] = value
+            
+    def list_options(self):
+        for option in self.options:
+            print(option)
+    
+    def append_message(self, role, content):
+        self.messages.append({'role': role, 'content': content})
+
+    def clear_messages(self):
+        self.messages.clear()
+        
+    def clear_history(self):
+        self.clear_messages()
+        ui.notify('Chat History Cleared!')
+        self.append_message('user',self.pyformat)
+        self.append_message('assistant','Yes sir, I will follow those rules!')
+
 
 @ui.page('/')
 def main():
-    global message
+
+    convo = conversation()
     
     # generate a bot icon from user ID and human icon from 'human' string
     user_id = str(uuid4())
     robot_avatar = f'https://robohash.org/{user_id}?bgset=bg2'
     user_avatar = 'https://robohash.org/human?bgset=bg2'
     
-    # async function to clear messages such that the chat history is wiped
-    async def clear() -> None:
-        message.clear()
-        ui.notify('History Cleared!')
-    
-    
-    async def send() -> None:           
+    async def send() -> None:
+        
         # text is a ui.input used to get user input
         question = text.value
         text.value = ''
@@ -57,9 +102,9 @@ def main():
             log.push(question)
 
         # append current prompt to chat history
-        message.append({'role': 'user', 'content': question})
+        convo.append_message('user', question)
         # retrieve the response async as a streamed output
-        part = await AsyncClient().chat(model='gemma3:latest', messages=message, format=code_response.model_json_schema(), stream=False)
+        part = await AsyncClient().chat(model='gemma3:latest', messages=convo.messages, options=convo.options, format=code_response.model_json_schema(), stream=False)
         output = code_response.model_validate_json(part['message']['content'])
         #response += part['message']['content']
         response_message.clear()
@@ -73,7 +118,7 @@ def main():
         # once responded no more "thinking" dots
         message_container.remove(spinner)
         # save bot response to chat history and log tab
-        message.append({'role': 'assistant', 'content' : part['message']['content']})
+        convo.append_message('assistant', part['message']['content'])
         log.push(part['message']['content'])
         
     # CSS style options
@@ -100,7 +145,7 @@ def main():
             placeholder = 'message'
             text = ui.input(placeholder=placeholder).props('input-class=mx-3') \
                 .classes('w-full bg-grey self-center').on('keydown.enter', send)
-            ui.button('Reset History', on_click=clear) #lambda message: (message := [], ui.notify('Chat History Cleared!')))
+            ui.button('Reset History', on_click=convo.clear_history)
 
 # lastly we run the GUI
 ui.run(title='LLM Code', favicon='https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg')
