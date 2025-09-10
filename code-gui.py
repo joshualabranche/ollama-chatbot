@@ -25,8 +25,10 @@ class conversation():
            required: 'PEP 8' official python style guide for all python code generation.
            required: PEP 484 type hint styling.
            required: lower_case_with_underscores naming conventions.
-           required: do not use triple quotes at the beginning of the code snippet
-           required: do use ``` python ``` to distinguish the code in text
+           required: ensure proper spacing in all functions
+           required: remove all ``` python from the beginning of the generated_code
+           required: remove all ``` from the end of the generated_code
+           required: all code is python
         """
         self.append_message('user',self.pyformat)
         self.append_message('assistant','Yes sir, I will follow those rules!')
@@ -39,10 +41,10 @@ class conversation():
             'min_p': 0.0,
             'typical_p': 0.7,
             'repeat_last_n': 64,
-            'temperature': 0.2,
+            'temperature': 0.5,
             'repeat_penalty': 1.1,
             'presence_penalty': 1.5,
-            'frequency_penalty': 1.0,
+            'frequency_penalty': 1.1,
             'penalize_newline': False,
             'stop': ["user:"],
             'numa': False,
@@ -88,7 +90,7 @@ def main():
     codellama:latest            8fdf8f752f6e    3.8 GB    5 days ago
     gemma3:latest               a2af6cc3eb7f    3.3 GB    5 days ago
     """
-    model_name = 'deepseek-coder-v2:latest'
+    model_name = 'gemma3:latest'
     
     # initialize the conversation
     convo = conversation()
