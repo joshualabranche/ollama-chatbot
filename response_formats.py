@@ -11,5 +11,5 @@ from pydantic import BaseModel
 class code_response(BaseModel):
     information: str
     generated_code: str 
-    overview: str
-    execution: str
+    # overview: str
+    # execution: str

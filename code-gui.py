@@ -21,19 +21,20 @@ class conversation():
         """Initializes the MyClass object."""
         self.messages = []
         self.pyformat = """
-            required: linebreak characters for proper format when using the python function print.
-            required: 'PEP 8' official python style guide for all python code generation.
-            required: PEP 8 type hinting.
-            required: lower_case_with_underscores naming conventions.
-            required: do not use triple quotes at the beginning of the code snippet
-            """
+           required: linebreak characters for proper format when using the python function print.
+           required: 'PEP 8' official python style guide for all python code generation.
+           required: PEP 484 type hint styling.
+           required: lower_case_with_underscores naming conventions.
+           required: do not use triple quotes at the beginning of the code snippet
+           required: do use ``` python ``` to distinguish the code in text
+        """
         self.append_message('user',self.pyformat)
         self.append_message('assistant','Yes sir, I will follow those rules!')
         self.options = {
             'num_keep': 5,
             'seed': 42,
             'num_predict': 2048,
-            'top_k': 10,
+            'top_k': 20,
             'top_p': 0.75,
             'min_p': 0.0,
             'typical_p': 0.7,
@@ -45,7 +46,7 @@ class conversation():
             'penalize_newline': False,
             'stop': ["user:"],
             'numa': False,
-            'num_ctx': 1024,
+            'num_ctx': 4096,
             'num_batch': 2,
             'num_gpu': 1,
             'main_gpu': 0,
@@ -76,9 +77,20 @@ class conversation():
 
 @ui.page('/')
 def main():
+    # initialize the web GUI in dark mode
     dark = ui.dark_mode()
     dark.enable()
     
+    """ 
+    NAME                        COMMIT          SIZE      UPDATED
+    deepseek-coder-v2:latest    63fb193b3a9b    8.9 GB    21 seconds ago
+    qwen2.5-coder:latest        dae161e27b0e    4.7 GB    6 minutes ago
+    codellama:latest            8fdf8f752f6e    3.8 GB    5 days ago
+    gemma3:latest               a2af6cc3eb7f    3.3 GB    5 days ago
+    """
+    model_name = 'deepseek-coder-v2:latest'
+    
+    # initialize the conversation
     convo = conversation()
     
     # generate a bot icon from user ID and human icon from 'human' string
@@ -91,6 +103,9 @@ def main():
         # text is a ui.input used to get user input
         question = text.value
         text.value = ''
+        
+        # append style guidelines to log file
+        log.push(convo.pyformat)
 
         with message_container:
             # timestamp each message
@@ -102,19 +117,19 @@ def main():
             # "thinking" dots for output
             spinner = ui.spinner(type='dots')
             # append chat history to log file
-            log.push(question)
+            log.push("python code request: " + question)
 
         # append current prompt to chat history
-        convo.append_message('user', question)
+        convo.append_message('user', "python code request: " + question)
         # retrieve the response async as a streamed output
-        part = await AsyncClient().chat(model='gemma3:latest', messages=convo.messages, options=convo.options, format=code_response.model_json_schema(), stream=False)
+        part = await AsyncClient().chat(model=model_name, messages=convo.messages, options=convo.options, format=code_response.model_json_schema(), stream=False)
         output = code_response.model_validate_json(part['message']['content'])
         #response += part['message']['content']
         response_message.clear()
         with response_message:
             ui.label(output.information)
-            ui.code(output.generated_code)
-            ui.html("OVERVIEW: <br> "+ output.overview + "<br><br> *** <br><br> EXECUTION: <br>" + output.execution)
+            ui.code(output.generated_code).style('color: black;')
+            # ui.html("OVERVIEW: <br> "+ output.overview + "<br><br> *** <br><br> EXECUTION: <br>" + output.execution)
         # js function to auto scroll as chat develops
         ui.run_javascript('window.scrollTo(0, document.body.scrollHeight)')
 
