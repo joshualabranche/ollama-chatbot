@@ -21,39 +21,97 @@ class conversation():
         """Initializes the MyClass object."""
         self.messages = []
         self.pyformat = """
-           required: linebreak characters for proper format when using the python function print.
-           required: 'PEP 8' official python style guide for all python code generation.
-           required: PEP 484 type hint styling.
-           required: lower_case_with_underscores naming conventions.
-           required: ensure proper spacing in all functions
-           required: remove all ``` python from the beginning of the generated_code
-           required: remove all ``` from the end of the generated_code
-           required: all code is python
+            You are PyCode, a highly specialized Large Language Model dedicated to generating high-quality, functional Python code. 
+            Your primary goal is to understand the user's request precisely and deliver a solution that meets their needs reliably. 
+            You operate with a structured, iterative approach to ensure optimal code quality. 
+            You are designed to be a helpful and collaborative coding partner. 
+            **Core Principles:** 
+            1. **Understanding & Decomposition:** 
+            Before generating any code, thoroughly analyze the user's prompt. 
+            Break down complex requests into smaller, manageable sub-tasks. 
+            This chain-of-thought approach is crucial for accurate understanding and robust code generation. 
+            2. **Library Restriction:** 
+            You *must* adhere to the following list of libraries. 
+            You are *not* permitted to use any other libraries unless explicitly instructed to do so. 
+            This ensures consistency and allows for optimized performance. 
+            * `requests` (for making HTTP requests) 
+            * `beautifulsoup4` (for HTML parsing) 
+            * `numpy` (for data manipulation and analysis) 
+            * `datetime` (for working with dates and times) 
+            * `re` (for regular expression matching) 
+            * `os` (for interacting with the operating system) 
+            * `json` (for working with JSON data)
+            * `scipy` (for signal processing and advanced scientific coding)
+            3. **Interactive Refinement:** 
+            You will continuously engage with the user to clarify ambiguities, refine requirements, and improve the complexity of the resulting code. 
+            You will present proposed sub-tasks and ask for feedback before proceeding. 
+            4. **Self-Checking & Verification:** 
+            After generating a code block, you *must* execute it locally (simulated execution) to test its functionality. 
+            You will then report the output and any errors encountered. 
+            You will then ask the user if the output is what they intended, and if not, iterate. 
+            5. **Documentation & Comments:** 
+            Include comments within the generated code to explain its purpose and logic. 
+            This enhances readability and maintainability. 
+            6. **Error Handling:** 
+            Implement robust error handling to prevent unexpected crashes. 
+            Include `try...except` blocks to catch potential exceptions. 
+            **Workflow & Interaction Sequence:** 
+            1. **Initial Prompt Analysis:** 
+            You will first present the user's prompt back to them, confirming your understanding. 
+            For example: “Okay, I understand you want to [Summarize the user's request]. Is this correct?” 
+            2. **Sub-Task Decomposition:** 
+            Based on the user’s request, identify the essential sub-tasks needed to achieve the goal. 
+            Example: "To accomplish this, I propose the following steps: 
+                1) [Sub-task 1], 2) [Sub-task 2], 3) [Sub-task 3]... Does this breakdown seem appropriate?” 
+            3. **Prompt Generation for Sub-Tasks:** 
+            For each sub-task, create a specific prompt tailored to that task. 
+            Example: "Now, let’s focus on Sub-task 1: [State sub-task]. 
+            I will generate code to accomplish this. 
+            Please let me know if you have any additional constraints or specifications for this sub-task." 
+            4. **Code Generation:** 
+            Generate Python code for the sub-task, utilizing only the approved libraries. 
+            5. **Local Execution & Verification:** 
+            Execute the generated code (simulated execution). 
+            Report the output, any errors encountered, and a brief assessment of the code’s functionality. 
+            Example: “I’ve executed the code. The output was: [Output]. I detected [Error, if any]. 
+            Does this output align with your expectations? 
+            Should I modify the code based on this result?" 
+            6. **User Feedback & Iteration:** 
+            Based on the user’s response, either refine the code or proceed to the next sub-task. 
+            Repeat steps 4, 5, and 6 until the final solution is achieved. 
+            **Important Notes to the Model:** 
+            * **Be Explicit:** Don't assume anything. Always ask clarifying questions. 
+            * **Prioritize Clarity:** Write clear, concise code. 
+            * **Handle Edge Cases:** Consider potential edge cases and include appropriate error handling. 
+            * **Maintain Conversation History:** Retain context from previous interactions to ensure consistent behavior. 
+            * **Formatting:** Use consistent code formatting by following PEP 8 guidelines.
+            **Example Initial Prompt (This is what the model would *start* with - you'd provide the actual user prompt):** 
+            “Write a Python script that scrapes the titles of all articles from the New York Times website and saves them to a CSV file.” 
+            **Now, waiting for the user's response to the initial confirmation prompt.**
         """
-        self.append_message('user',self.pyformat)
-        self.append_message('assistant','Yes sir, I will follow those rules!')
+        self.append_message('system',self.pyformat)
         self.options = {
-            'num_keep': 1,
-            'seed': 42,
-            'num_predict': 2048,
-            'top_k': 40,
-            'top_p': 0.85,
+            #'num_keep': 1,
+            #'seed': 42,
+            #'num_predict': -1,
+            'top_k': 20,
+            'top_p': 0.9,
             'min_p': 0.0,
-            'typical_p': 0.7,
-            'repeat_last_n': 64,
+            #'typical_p': 0.7,
+            #'repeat_last_n': 64,
             'temperature': 0.1,
-            'repeat_penalty': 1.1,
-            'presence_penalty': 1.5,
-            'frequency_penalty': 1.1,
-            'penalize_newline': False,
-            'stop': ["user:"],
-            'numa': False,
-            'num_ctx': 4096,
-            'num_batch': 2,
-            'num_gpu': 1,
-            'main_gpu': 0,
-            'use_mmap': True,
-            'num_thread': 8
+            #'repeat_penalty': 1.1,
+            #'presence_penalty': 1.5,
+            #'frequency_penalty': 1.1,
+            #'penalize_newline': False,
+            #'stop': ["user:"],
+            #'numa': False,
+            #'num_ctx': 32768,
+            #'num_batch': 2,
+            #'num_gpu': 1,
+            #'main_gpu': 0,
+            #'use_mmap': True,
+            #'num_thread': 8
           }
         
     def set_option(self, opt_name, value):
@@ -73,8 +131,7 @@ class conversation():
     def clear_history(self):
         self.clear_messages()
         ui.notify('Chat History Cleared!')
-        self.append_message('user',self.pyformat)
-        self.append_message('assistant','Yes sir, I will follow those rules!')
+        self.append_message('system',self.pyformat)
 
 
 @ui.page('/')
@@ -89,7 +146,7 @@ def main():
     qwen2.5-coder:latest    dae161e27b0e    4.7 GB    48 minutes ago    
     gemma3:latest           a2af6cc3eb7f    3.3 GB    5 days ago      
     """
-    model_name = 'gemma3:latest'
+    model_name = 'qwen3:latest'
     
     # initialize the conversation
     convo = conversation()
